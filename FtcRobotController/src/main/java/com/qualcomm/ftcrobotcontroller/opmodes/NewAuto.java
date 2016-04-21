@@ -94,9 +94,8 @@ public class NewAuto  extends OpMode {
     }
 
     private boolean have_drive_encoders_reached(int i, int i1) {
-
-        return motorLeft.getCurrentPosition() >= i && motorRight.getCurrentPosition() >= i1;
-    }
+        return Math.abs(motorLeft.getCurrentPosition()) >= i && Math.abs(motorRight.getCurrentPosition()) >= i1;
+}
 
 
     private void run_using_encoders() {

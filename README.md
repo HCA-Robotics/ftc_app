@@ -1,4 +1,7 @@
 # ftc_app
+
+[![Join the chat at https://gitter.im/HCA-Robotics/ftc_app](https://badges.gitter.im/HCA-Robotics/ftc_app.svg)](https://gitter.im/HCA-Robotics/ftc_app?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 FTC Android Studio project to create FTC Robot Controller app.
 
 This is the FTC SDK that can be used to create an FTC Robot Controller app, with custom op modes.

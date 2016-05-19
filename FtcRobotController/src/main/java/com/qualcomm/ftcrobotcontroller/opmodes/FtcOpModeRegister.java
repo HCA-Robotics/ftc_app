@@ -65,7 +65,10 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register ("demo", demo.class);
     manager.register ("demo2", demo2.class);
     manager.register ("NewAuto", NewAuto.class);
-
+    manager.register ("TheBestAuto", NewNewAuto.class);
+    manager.register("Square", PushBotSquare.class);
+    manager.register("MarkIsTheCoolestPersonEver", PushBotMarkIsSoCool.class);
+    manager.register("PushBotMarkIsSoAwesome", PushBotMarkIsSoAwesome.class);
 
 
     /*

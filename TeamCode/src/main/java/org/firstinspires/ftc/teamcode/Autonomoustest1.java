@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tandi User on 4/24/2017.
@@ -15,24 +11,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "Autonomoustest1", group = "HCA Opmode")
 public class Autonomoustest1 extends BaseOpMode {
 
-    /**  private ElapsedTime runtime = new ElapsedTime();
-     */
-    DcMotor motorLeft = null;
-    DcMotor motorRight = null;
 
-
+    List<Task> tasks = new ArrayList<Task>();
 
     @Override
     public void init() {
 
         telemetry.addData("Status", "Initialized");
-        motorLeft = hardwareMap.dcMotor.get("motor_1");
-        motorRight = hardwareMap.dcMotor.get("motor_2");
+        tasks.add(new DriveForwardTask(10, 0.5));
 
-        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRight.setDirection(DcMotor.Direction.REVERSE);
-
+        for (Task t : tasks) {
+            t.init(hardwareMap);
+        }
     }
 
     boolean done = false;
@@ -40,34 +30,11 @@ public class Autonomoustest1 extends BaseOpMode {
 
     @Override
     public void loop() {
-
-        if (done) return;
-        if (!hasstarted) {
-            hasstarted = true;
-            telemetry.addData("Status", "hi there!");
-            motorLeft.setTargetPosition(1220);
-            motorRight.setTargetPosition(1220);
-            telemetry.addData("Status", "atjsethogetor");
-            motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorLeft.setPower(1);
-            motorRight.setPower(1);
-        }
-
-        int position = Math.min(
-                Math.abs(motorLeft.getCurrentPosition()),
-                Math.abs(motorRight.getCurrentPosition()));
-        telemetry.addData("Status", "WAIT!!!!!");
-
-        if (position >= 1220) {
-            done = true;
-            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorLeft.setPower(0);
-            motorRight.setPower(0);
-            motorRight.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-            motorLeft.setZeroPowerBehavior(ZeroPowerBehavior.BRAKE);
-
+        for (Task t : tasks){
+            t.loop();
+            if(t.isTaskDone()){
+                tasks.remove(t);
+            }
 
         }
     }
@@ -76,9 +43,6 @@ public class Autonomoustest1 extends BaseOpMode {
     public void stop() {
 
         telemetry.addData("Message", "Done");
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
     }
 

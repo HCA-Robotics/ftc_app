@@ -15,21 +15,19 @@ To change color sensor I2C Addresses, go to http://modernroboticsedu.com/mod/les
 Support is available by emailing support@modernroboticsinc.com.
 */
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name = "RevColorTest", group = "MRI")
+@Autonomous(name = "RevColorTest", group = "MRI")
 // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class RevColorTest extends OpMode {
 
     /* Declare OpMode members. */
@@ -39,6 +37,13 @@ public class RevColorTest extends OpMode {
 
     ColorSensor colorC;
     I2cDeviceSynch colorCreader;
+    DcMotor Fmotorleft;
+    DcMotor Fmotorright;
+    DcMotor Bmotorleft;
+    DcMotor Bmotorright;
+    DcMotor treadleft;
+    DcMotor treadright;
+    Servo Sensorarm;
 
 //    TouchSensor touch;         //Instance of TouchSensor - for changing color sensor mode
 
@@ -52,6 +57,15 @@ public class RevColorTest extends OpMode {
     public void init() {
         telemetry.addData("Status", "Initialized");
 colorC = hardwareMap.colorSensor.get("RevColor");
+        Fmotorleft = hardwareMap.dcMotor.get("motor_1");
+        Fmotorright = hardwareMap.dcMotor.get("motor_2");
+        Bmotorleft = hardwareMap.dcMotor.get("motor_3");
+        Bmotorright = hardwareMap.dcMotor.get("motor_4");
+        treadleft = hardwareMap.dcMotor.get("motor_6");
+        treadright = hardwareMap.dcMotor.get("motor_7");
+        Sensorarm = hardwareMap.servo.get("servo_1");
+
+        double targettime;
         //the below lines set up the configuration file
         /*colorC = hardwareMap.i2cDevice.get("RevColor");
         colorCreader = new I2cDeviceSynchImpl(colorC, I2cAddr.create8bit(0x3c), false);
@@ -75,6 +89,8 @@ colorC = hardwareMap.colorSensor.get("RevColor");
     @Override
     public void start() {
         runtime.reset();
+
+        //targettime = System.currentTimeMillis()+1000;
 
         colorC.enableLed(LEDState);
         /*if(LEDState) {

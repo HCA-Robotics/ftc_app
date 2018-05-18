@@ -41,11 +41,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * <p/>
  * Enables control of the robot via the gamepad
  */
-@TeleOp(name = "K9TeleOp_ODShca", group = "HCA Opmode")
-public class K9TeleOp_ODShca extends OpMode {
+@TeleOp(name = "K9TeleOp_SingleDrive", group = "HCA Opmode")
+public class K9TeleOp_SingleDrive extends OpMode {
 
-	/*
-     * Note: the configuration of the servos is such that
+	/*     * Note: the configuration of the servos is such that
+
 	 * as the arm servo approaches 0, the arm position moves up (away from the floor).
 	 * Also, as the claw servo approaches 0, the claw opens up (drops the game element).
 	 */
@@ -77,7 +77,7 @@ public class K9TeleOp_ODShca extends OpMode {
     /**
      * Constructor
      */
-    public K9TeleOp_ODShca() {
+    public K9TeleOp_SingleDrive() {
 
     }
 
@@ -106,9 +106,9 @@ public class K9TeleOp_ODShca extends OpMode {
 		 *    "servo_1" controls the arm joint of the manipulator.
 		 *    "servo_6" controls the claw joint of the manipulator.
 		 */
-        Fmotorleft = hardwareMap.dcMotor.get("motor_1");
-        Fmotorright = hardwareMap.dcMotor.get("motor_2");
-        Bmotorleft = hardwareMap.dcMotor.get("motor_3");
+        Fmotorleft = hardwareMap.dcMotor.get("motor_1");    //know naming conventions, nerd: variables are lowercase
+        Fmotorright = hardwareMap.dcMotor.get("motor_2");   //constants or final variables are ALL_CAPS
+        Bmotorleft = hardwareMap.dcMotor.get("motor_3");    //classes are capitalized, methods are also lowercase
         Bmotorright = hardwareMap.dcMotor.get("motor_4");
         lift = hardwareMap.dcMotor.get("motor_5");
         treadleft = hardwareMap.dcMotor.get("motor_6");
@@ -124,7 +124,8 @@ public class K9TeleOp_ODShca extends OpMode {
      * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#run()
      */
     @Override
-    public void loop() {
+    public void loop()
+    {
 
 		/*
 		 * Gamepad 1
@@ -141,7 +142,7 @@ public class K9TeleOp_ODShca extends OpMode {
         //float throttle = gamepad1.right_stick_y;
         //float right = throttle;
         //float left = throttle;
-        double powerlevel = 1;
+        double powerlevel = 1.0;
 
         if (gamepad1.right_bumper){
             powerlevel = powerlevel*.5;
@@ -160,28 +161,29 @@ public class K9TeleOp_ODShca extends OpMode {
         Bmotorleft.setPower((-C1LY - C1LX + C1RX)*powerlevel);
         Bmotorright.setPower((C1LY - C1LX + C1RX)*powerlevel);
 
-        if (gamepad2.dpad_up /*&& !gamepad2.dpad_down*/) { //if the dpad up arrow is held, lift the arm
+        if (gamepad1.dpad_up /*&& !gamepad2.dpad_down*/)
+        { //if the dpad up arrow is held, lift the arm
             lift.setPower(-1);
 
         }
-        if (gamepad2.dpad_down /*&& !gamepad2.dpad_up*/) { //if the dpad down arrow is held, lower the arm
+        if (gamepad1.dpad_down /*&& !gamepad2.dpad_up*/) { //if the dpad down arrow is held, lower the arm
             lift.setPower(1);
         }//replaced "if(!(up ^  down)){"  with  "if(!(up || down)){"
-         //replaced "if(!(up || down)){"  with  "else {"
-         //replaced "else {"
-         if(!(gamepad2.dpad_down || gamepad2.dpad_up)){
+        //replaced "if(!(up || down)){"  with  "else {"
+        //replaced "else {"
+        if(!(gamepad1.dpad_down || gamepad1.dpad_up)){
             lift.setPower(0);                               //else lock the motor; stop running
         }
-        if (gamepad2.y /*&& !gamepad2.dpad_down*/) { //if the dpad up arrow is held, lift the arm
+        if (gamepad1.y /*&& !gamepad2.dpad_down*/) { //if the dpad up arrow is held, lift the arm
             push.setPower(-.8);
 
         }
-        if (gamepad2.a /*&& !gamepad2.dpad_up*/) { //if the dpad down arrow is held, lower the arm
+        if (gamepad1.a /*&& !gamepad2.dpad_up*/) { //if the dpad down arrow is held, lower the arm
             push.setPower(.3);
         }//replaced "if(!(up ^  down)){"  with  "if(!(up || down)){"
         //replaced "if(!(up || down)){"  with  "else {"
         //replaced "else {"
-        if(!(gamepad2.y || gamepad2.a)){
+        if(!(gamepad1.y || gamepad1.a)){
             push.setPower(0);                               //else lock the motor; stop running
         }
 
@@ -192,10 +194,23 @@ public class K9TeleOp_ODShca extends OpMode {
         if (gamepad2.b) {
             push.setPosition(.5);
         }*/
-        treadleft.setPower(gamepad2.left_stick_y);
-        treadright.setPower(-(gamepad2.left_stick_y));
+        if (gamepad1.dpad_left /*&& !gamepad2.dpad_down*/) { //if the dpad up arrow is held, lift the arm
+            treadleft.setPower(-1);
+            treadright.setPower(1);
 
-        // clip the right/left values so that the values never exceed +/- 1
+        }
+
+        if (gamepad1.dpad_right /*&& !gamepad2.dpad_up*/) { //if the dpad down arrow is held, lower the arm
+            treadleft.setPower(1);
+            treadright.setPower(-1);
+
+        }
+        if(!(gamepad1.dpad_right || gamepad1.dpad_left))
+            treadleft.setPower(0);
+            treadright.setPower(0);
+        }
+
+            // clip the right/left values so that the values never exceed +/- 1
         //left = Range.clip(left, -1, 1);
 
         // scale the joystick value to make it easier to control
@@ -223,7 +238,8 @@ public class K9TeleOp_ODShca extends OpMode {
         }
 
         // update the position of the claw
-        if (gamepad2.dpad_up) {
+        if (gamepad2.dpad_up)
+        {
             leftarm.setPosition(.3);
             rightarm.setPosition(.7);
         }
@@ -237,7 +253,7 @@ public class K9TeleOp_ODShca extends OpMode {
             leftarm.setPosition(.6);
             rightarm.setPosition(.3);
         }*/
-      //  telemetry.addData("light", ods_sensor.getVoltage());
+        //  telemetry.addData("light", ods_sensor.getVoltage());
     }
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -250,7 +266,7 @@ public class K9TeleOp_ODShca extends OpMode {
     //telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
     // telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
 
-}
+
 
 	/*
 	 * Code to run when the op mode is first disabled goes here

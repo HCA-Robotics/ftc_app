@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public abstract class BaseOpMode  extends OpMode{
+public abstract class BaseOpMode  extends OpMode {
     DcMotor motorRight;
     DcMotor motorLeft;
 
